@@ -4,6 +4,8 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.Build;
 import android.support.annotation.NonNull;
@@ -27,8 +29,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Locale;
 
 public class LoggedIn extends AppCompatActivity {
 
@@ -60,6 +67,7 @@ public class LoggedIn extends AppCompatActivity {
         mDatabase.child("Parkings").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                listParking.clear();
                 Iterator<DataSnapshot> i = dataSnapshot.getChildren().iterator();
                 while (i.hasNext()) {
                     DataSnapshot data = i.next();
@@ -101,8 +109,9 @@ public class LoggedIn extends AppCompatActivity {
                         // Got last known location. In some rare situations this can be null.
                         if (location != null) {
                             // Logic to handle location object
-                            loc.setText(String.valueOf(location.getLatitude()) + "-"
-                                    + String.valueOf(location.getLongitude()));
+                            loc.setText(giveMEAdress(location.getLatitude(), location.getLongitude()));
+                            /*loc.setText(String.valueOf(location.getLatitude()) + "-"
+                                    + String.valueOf(location.getLongitude()));*/
                             LoggedIn.this.location = location;
                         }
                     }
@@ -185,5 +194,20 @@ public class LoggedIn extends AppCompatActivity {
                 * Math.sin(lngDistance / 2) * Math.sin(lngDistance / 2);
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         return (float) ((AVERAGE_RADIUS_OF_EARTH_KM * c));
+    }
+
+    List<Address>  adresses;
+
+    public String giveMEAdress(double lat,double lon){
+        Locale local = new Locale("arabic","Algeria");
+        Geocoder geo = new Geocoder(getApplicationContext(),local);
+        try {
+            adresses = geo.getFromLocation(lat,lon,3);
+            Address adr = adresses.get(0);
+            return adr.getFeatureName();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return  null;
+        }
     }
 }

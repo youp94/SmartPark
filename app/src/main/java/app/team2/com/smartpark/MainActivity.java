@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
 
-                            Intent intent = new Intent(getApplicationContext(), LoggedIn.class);
+                            Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
                             startActivity(intent);
                         } else {
                             // Sign in failed, display a message and update the UI
@@ -113,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
 
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if(currentUser != null){
-            Intent intent = new Intent(getApplicationContext(), LoggedIn.class);
+            Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
             startActivity(intent);
         }
     }
