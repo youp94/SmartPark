@@ -21,8 +21,8 @@ import java.util.List;
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
-    Button btn_search;
-    EditText locationSearch;
+    //Button btn_search;
+    //EditText locationSearch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +33,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        btn_search = findViewById(R.id.btn_search);
+        /*btn_search = findViewById(R.id.btn_search);
         locationSearch = findViewById(R.id.editSearch);
 
         btn_search.setOnClickListener(new View.OnClickListener() {
@@ -56,7 +56,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
                 }
             }
-        });
+        });*/
     }
 
     @Override
