@@ -5,10 +5,10 @@
     android:orientation="vertical">
 
     <fragment
-        android:id="@+id/place_autocomplete_fragment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment" />
+    android:id="@+id/place_autocomplete_fragment"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment" />
 
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:map="http://schemas.android.com/apk/res-auto"
@@ -16,7 +16,24 @@
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="420dp"
         tools:context=".MapsActivity" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/txt_rayon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="rayon"/>
+        <Button
+            android:id="@+id/btn_choisir"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Choisir"/>
+
+    </LinearLayout>
 
 </LinearLayout>

@@ -1,5 +1,7 @@
 package app.team2.com.smartpark;
 
+import com.google.android.gms.maps.model.LatLng;
+
 public class Parking {
 
     private String nom;
@@ -7,16 +9,19 @@ public class Parking {
     private int nb_place_libre;
     private double lat;
     private double lon;
+    private int nb_place_reserve;
 
     public Parking() {
     }
 
-    public Parking(String nom, int nb_place, int nb_place_libre, double lat, double lon) {
+    public Parking(String nom, int nb_place, int nb_place_vide, double lat, double lon, int nb_place_reserve) {
         this.nom = nom;
         this.nb_place = nb_place;
-        this.nb_place_libre = nb_place_libre;
+        this.nb_place_libre = nb_place_vide;
         this.lat = lat;
         this.lon = lon;
+        this.nb_place_reserve = nb_place_reserve;
+
     }
 
     public String getNom() {
@@ -39,8 +44,8 @@ public class Parking {
         return nb_place_libre;
     }
 
-    public void setNb_place_libre(int nb_place_libre) {
-        this.nb_place_libre = nb_place_libre;
+    public void setNb_place_libre(int nb_place_vide) {
+        this.nb_place_libre = nb_place_vide;
     }
 
     public double getLat() {
@@ -57,5 +62,17 @@ public class Parking {
 
     public void setLon(double lon) {
         this.lon = lon;
+    }
+
+    public LatLng getLatLng(){
+        return new LatLng(this.lat, this.lon);
+    }
+
+    public int getNb_place_reserve() {
+        return nb_place_reserve;
+    }
+
+    public void setNb_place_reserve(int nb_place_reserve) {
+        this.nb_place_reserve = nb_place_reserve;
     }
 }
