@@ -4,13 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".LoggedIn"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context=".LoggedIn">
 
     <EditText
-        android:id="@+id/editText2"
+        android:id="@+id/txt_dest"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Vous allez ou ?"
         android:inputType="textPersonName" />
+
+    <TextView
+        android:id="@+id/loc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Your Location:" />
 </LinearLayout>

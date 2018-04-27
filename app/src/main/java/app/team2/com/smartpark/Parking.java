@@ -5,8 +5,8 @@ public class Parking {
     private String nom;
     private int nb_place;
     private int nb_place_libre;
-    private int lat;
-    private int lon;
+    private double lat;
+    private double lon;
 
     public Parking() {
     }
@@ -43,19 +43,19 @@ public class Parking {
         this.nb_place_libre = nb_place_libre;
     }
 
-    public int getLat() {
+    public double getLat() {
         return lat;
     }
 
-    public void setLat(int lat) {
+    public void setLat(double lat) {
         this.lat = lat;
     }
 
-    public int getLon() {
+    public double getLon() {
         return lon;
     }
 
-    public void setLon(int lon) {
+    public void setLon(double lon) {
         this.lon = lon;
     }
 }
