@@ -11,7 +11,7 @@ public class Parking {
     public Parking() {
     }
 
-    public Parking(String nom, int nb_place, int nb_place_libre, int lat, int lon) {
+    public Parking(String nom, int nb_place, int nb_place_libre, double lat, double lon) {
         this.nom = nom;
         this.nb_place = nb_place;
         this.nb_place_libre = nb_place_libre;
