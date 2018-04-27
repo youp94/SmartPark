@@ -162,7 +162,7 @@ public class LoggedIn extends AppCompatActivity {
                     parking.getLat(), parking.getLon());
 
             nom.setText(parking.getNom());
-            dist.setText("Distance: " + String.valueOf(distance) + " KM");
+            dist.setText("Distance: " + String.valueOf(distance) + " Km");
 
             return convertView;
         }
