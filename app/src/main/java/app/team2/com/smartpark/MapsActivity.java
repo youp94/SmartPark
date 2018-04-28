@@ -29,6 +29,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -46,13 +47,15 @@ import java.util.List;
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
-    //Button btn_search;
-    //EditText locationSearch;
+    Button btn_choisir;
+    Button tous;
+    EditText txt_rayon;
 
     private DatabaseReference mDatabase;
 
     private FusedLocationProviderClient mFusedLocationClient;
     private Location location;
+    private LatLng destinationLocation = null;
 
     ArrayList<Parking> listParking = new ArrayList<>();
 
@@ -79,9 +82,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     float distance = calculateDistanceInKilometer(location.getLatitude(), location.getLongitude(),
                             park.getLat(), park.getLon());
                     if(distance< 10.0){
-                        mMap.addMarker(new MarkerOptions().position(park.getLatLng()).title(park.getNom()+ " /" +
-                        "Distance: "+String.valueOf(distance)+ " KM/ "+
-                        "Places libre: "+String.valueOf(park.getNb_place_libre())));
+                        if(park.getNb_place_libre()>0) {
+                            mMap.addMarker(new MarkerOptions().position(park.getLatLng()).title(park.getNom() + " /" +
+                                    "Distance: " + String.valueOf(distance) + " KM/ " +
+                                    "Places libre: " + String.valueOf(park.getNb_place_libre()))
+                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ava)));
+                        }
                     }
                 }
             }
@@ -102,15 +108,150 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place place) {
-                // TODO: Get info about the selected place.
-                Log.i(TAG, "Place: " + place.getName());
-                mMap.addMarker(new MarkerOptions().position(place.getLatLng()).title("Votre destination"));
+                mMap.clear();
+                mMap.addMarker(new MarkerOptions().position(place.getLatLng()).title("Votre destination")
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.dest)));
+
+                destinationLocation = place.getLatLng();
+
+                float r;
+                if(!txt_rayon.getText().toString().equals("")){
+                    r = Float.parseFloat(txt_rayon.getText().toString());
+                }else {
+                    r= 10;
+                }
+                LatLng sydney = new LatLng(location.getLatitude(),location.getLongitude());
+                mMap.addMarker(new MarkerOptions().position(sydney).title("Position actuelle")
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.me)));
+                for(int i=0; i<listParking.size(); i++){
+                    Parking park = listParking.get(i);
+                    float distance = calculateDistanceInKilometer(destinationLocation.latitude,
+                            destinationLocation.longitude,
+                            park.getLat(), park.getLon());
+                    if(distance< r){
+                        if(park.getNb_place_libre()>0) {
+                            mMap.addMarker(new MarkerOptions().position(park.getLatLng()).title(park.getNom() + " /" +
+                                    "Distance: " + String.valueOf(distance) + " KM/ " +
+                                    "Places libre: " + String.valueOf(park.getNb_place_libre()))
+                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ava)));
+                        }
+                    }
+                }
+
             }
 
             @Override
             public void onError(Status status) {
                 // TODO: Handle the error.
                 Log.i(TAG, "An error occurred: " + status);
+            }
+        });
+
+        btn_choisir = findViewById(R.id.btn_choisir);
+        txt_rayon = findViewById(R.id.txt_rayon);
+        tous = findViewById(R.id.all);
+
+        btn_choisir.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                float r = Float.parseFloat(txt_rayon.getText().toString());
+                mMap.clear();
+                if(destinationLocation == null) {
+                    LatLng sydney = new LatLng(location.getLatitude(), location.getLongitude());
+                    mMap.addMarker(new MarkerOptions().position(sydney).title("Position actuelle")
+                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.me)));
+                    mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+                    for (int i = 0; i < listParking.size(); i++) {
+                        Parking park = listParking.get(i);
+                        float distance = calculateDistanceInKilometer(location.getLatitude(), location.getLongitude(),
+                                park.getLat(), park.getLon());
+                        if (distance < r) {
+                            if(park.getNb_place_libre()>0) {
+                                mMap.addMarker(new MarkerOptions().position(park.getLatLng()).title(park.getNom() + " /" +
+                                        "Distance: " + String.valueOf(distance) + " KM/ " +
+                                        "Places libre: " + String.valueOf(park.getNb_place_libre()))
+                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ava)));
+                            }
+                        }
+                    }
+                }else{
+                    LatLng sydney = new LatLng(location.getLatitude(), location.getLongitude());
+                    mMap.addMarker(new MarkerOptions().position(sydney).title("Position actuelle")
+                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.me)));
+                    mMap.addMarker(new MarkerOptions().position(destinationLocation).title("Votre Destination")
+                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.dest)));
+                    for (int i = 0; i < listParking.size(); i++) {
+                        Parking park = listParking.get(i);
+                        float distance = calculateDistanceInKilometer(destinationLocation.latitude,
+                                destinationLocation.longitude,
+                                park.getLat(), park.getLon());
+                        if (distance < r) {
+                            if(park.getNb_place_libre()>0) {
+                                mMap.addMarker(new MarkerOptions().position(park.getLatLng()).title(park.getNom() + " /" +
+                                        "Distance: " + String.valueOf(distance) + " KM/ " +
+                                        "Places libre: " + String.valueOf(park.getNb_place_libre()))
+                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ava)));
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        tous.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                float r = Float.parseFloat(txt_rayon.getText().toString());
+                mMap.clear();
+                if(destinationLocation == null) {
+                    LatLng sydney = new LatLng(location.getLatitude(), location.getLongitude());
+                    mMap.addMarker(new MarkerOptions().position(sydney).title("Position actuelle")
+                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.me)));
+                    mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+                    for (int i = 0; i < listParking.size(); i++) {
+                        Parking park = listParking.get(i);
+                        float distance = calculateDistanceInKilometer(location.getLatitude(), location.getLongitude(),
+                                park.getLat(), park.getLon());
+                        if (distance < r) {
+                            if(park.getNb_place_libre()>0) {
+                                mMap.addMarker(new MarkerOptions().position(park.getLatLng()).title(park.getNom() + " /" +
+                                        "Distance: " + String.valueOf(distance) + " KM/ " +
+                                        "Places libre: " + String.valueOf(park.getNb_place_libre()))
+                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ava)));
+                            }else {
+                                mMap.addMarker(new MarkerOptions().position(park.getLatLng()).title(park.getNom() + " /" +
+                                        "Distance: " + String.valueOf(distance) + " KM/ " +
+                                        "Places libre: " + String.valueOf(park.getNb_place_libre()))
+                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.full)));
+                            }
+                        }
+                    }
+                }else{
+                    LatLng sydney = new LatLng(location.getLatitude(), location.getLongitude());
+                    mMap.addMarker(new MarkerOptions().position(sydney).title("Position actuelle")
+                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.me)));
+                    mMap.addMarker(new MarkerOptions().position(destinationLocation).title("Votre Destination")
+                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.dest)));
+                    for (int i = 0; i < listParking.size(); i++) {
+                        Parking park = listParking.get(i);
+                        float distance = calculateDistanceInKilometer(destinationLocation.latitude,
+                                destinationLocation.longitude,
+                                park.getLat(), park.getLon());
+                        if (distance < r) {
+                            if(park.getNb_place_libre()>0) {
+                                mMap.addMarker(new MarkerOptions().position(park.getLatLng()).title(park.getNom() + " /" +
+                                        "Distance: " + String.valueOf(distance) + " KM/ " +
+                                        "Places libre: " + String.valueOf(park.getNb_place_libre()))
+                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ava)));
+                            }else {
+                                mMap.addMarker(new MarkerOptions().position(park.getLatLng()).title(park.getNom() + " /" +
+                                        "Distance: " + String.valueOf(distance) + " KM/ " +
+                                        "Places libre: " + String.valueOf(park.getNb_place_libre()))
+                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.full)));
+                            }
+                        }
+                    }
+                }
             }
         });
 
@@ -142,9 +283,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             // Logic to handle location object
                             MapsActivity.this.location = location;
                             LatLng sydney = new LatLng(location.getLatitude(),location.getLongitude());
-                            mMap.addMarker(new MarkerOptions().position(sydney).title("Position actuelle"));
+                            mMap.addMarker(new MarkerOptions().position(sydney).title("Position actuelle")
+                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.me)));
                             mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
 
+                            mMap.animateCamera(
+                                    CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(),
+                                            location.getLongitude()), 12.0f));
                         }
                     }
                 });
