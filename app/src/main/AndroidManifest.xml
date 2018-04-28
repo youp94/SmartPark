@@ -10,8 +10,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-
+        android:theme="@style/Theme.AppCompat.NoActionBar">
         <activity android:name=".MainActivity" />
         <activity android:name=".ComfirmePage" />
         <activity android:name=".SplachScreen">
@@ -36,7 +35,8 @@
 
         <activity
             android:name=".MapsActivity"
-            android:label="@string/title_activity_maps"></activity>
+            android:label="@string/title_activity_maps" />
+        <activity android:name=".Reservation"></activity>
     </application>
 
 </manifest>

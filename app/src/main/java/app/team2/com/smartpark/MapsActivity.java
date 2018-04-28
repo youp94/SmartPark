@@ -2,6 +2,7 @@ package app.team2.com.smartpark;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -31,6 +32,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
@@ -47,9 +49,11 @@ import java.util.List;
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
+    Marker chosen;
     Button btn_choisir;
     Button tous;
     EditText txt_rayon;
+    Button btn_reserver;
 
     private DatabaseReference mDatabase;
 
@@ -111,6 +115,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 mMap.clear();
                 mMap.addMarker(new MarkerOptions().position(place.getLatLng()).title("Votre destination")
                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.dest)));
+                mMap.moveCamera(CameraUpdateFactory.newLatLng(place.getLatLng()));
 
                 destinationLocation = place.getLatLng();
 
@@ -149,7 +154,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         btn_choisir = findViewById(R.id.btn_choisir);
         txt_rayon = findViewById(R.id.txt_rayon);
-        tous = findViewById(R.id.all);
+        tous = findViewById(R.id.btn_all);
+        btn_reserver = findViewById(R.id.btn_res);
 
         btn_choisir.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -255,6 +261,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
+        btn_reserver.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), Reservation.class);
+                startActivity(intent);
+            }
+        });
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         checkPermission();
@@ -313,18 +326,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        // Add a marker in Sydney and move the camera
-
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                Toast.makeText(getApplicationContext(), marker.getTitle(), Toast.LENGTH_LONG).show();
+                chosen = marker;
+                return false;
+            }
+        });
     }
 
     public final static double AVERAGE_RADIUS_OF_EARTH_KM = 6371;
 
-    public float calculateDistanceInKilometer(/*Location loc1,Location loc2*/
-            double userLat, double userLng, double venueLat, double venueLng) {
-        /*double userLat = loc1.getLatitude();
-        double userLng = loc1.getLongitude();
-        double venueLat = loc2.getLatitude();
-        double venueLng = loc2.getLongitude();*/
+    public float calculateDistanceInKilometer(double userLat, double userLng, double venueLat, double venueLng) {
         double latDistance = Math.toRadians(userLat - venueLat);
         double lngDistance = Math.toRadians(userLng - venueLng);
 

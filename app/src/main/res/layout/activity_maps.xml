@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
+    android:background="#FF1E374F"
     android:orientation="vertical">
 
     <fragment
@@ -13,28 +14,38 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_marginBottom="10dp">
 
         <EditText
+            android:layout_marginTop="1.5dp"
             android:id="@+id/txt_rayon"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
+            android:layout_width="60dp"
+            android:layout_height="30dp"
             android:hint="rayon"
             android:inputType="number"
+            android:background="#FFFF6D3D"
+            android:textColorHint="#FFFFFFFF"
             android:text="10"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text=":KM"/>
         <Button
+            android:layout_marginTop="1.5dp"
+            android:layout_marginLeft="5dp"
             android:id="@+id/btn_choisir"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="30dp"
+            android:background="#2b9686"
             android:text="Choisir"/>
         <Button
+            android:layout_marginTop="1.5dp"
+            android:layout_marginLeft="5dp"
             android:id="@+id/btn_all"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="30dp"
+            android:background="#2b9686"
             android:text="Tous les parkings"/>
 
     </LinearLayout>
@@ -45,7 +56,16 @@
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="450dp"
         tools:context=".MapsActivity" />
+
+    <Button
+        android:id="@+id/btn_res"
+        android:layout_marginTop="7dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="#FFFF6D3D"
+        android:text="Reserver"/>
 
 </LinearLayout>
