@@ -15,30 +15,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginBottom="10dp">
-
-        <EditText
-            android:layout_marginTop="1.5dp"
-            android:id="@+id/txt_rayon"
-            android:layout_width="60dp"
-            android:layout_height="30dp"
-            android:hint="rayon"
-            android:inputType="number"
-            android:background="#FFFF6D3D"
-            android:textColorHint="#FFFFFFFF"
-            android:text="10"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text=":KM"/>
-        <Button
-            android:layout_marginTop="1.5dp"
-            android:layout_marginLeft="5dp"
-            android:id="@+id/btn_choisir"
-            android:layout_width="wrap_content"
-            android:layout_height="30dp"
-            android:background="#2b9686"
-            android:text="Choisir"/>
+        android:layout_marginBottom="10dp"
+        android:gravity="center">
         <Button
             android:layout_marginTop="1.5dp"
             android:layout_marginLeft="5dp"
@@ -59,13 +37,24 @@
         android:layout_height="450dp"
         tools:context=".MapsActivity" />
 
-    <Button
-        android:id="@+id/btn_res"
-        android:layout_marginTop="7dp"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:background="#FFFF6D3D"
-        android:text="Reserver"/>
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Rayon"
+            android:layout_gravity="center"
+            android:textSize="18sp"/>
+        <SeekBar
+            android:id="@+id/seekBar"
+            android:layout_marginTop="7dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Rayon"/>
+    </LinearLayout>
+
+
 
 </LinearLayout>

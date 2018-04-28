@@ -2,6 +2,9 @@ package app.team2.com.smartpark;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.app.DatePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
@@ -13,10 +16,13 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,14 +52,14 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import static java.security.AccessController.getContext;
+
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
     Marker chosen;
-    Button btn_choisir;
     Button tous;
-    EditText txt_rayon;
-    Button btn_reserver;
+    SeekBar seekBar;
 
     private DatabaseReference mDatabase;
 
@@ -90,6 +96,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             mMap.addMarker(new MarkerOptions().position(park.getLatLng()).title(park.getNom() + " /" +
                                     "Distance: " + String.valueOf(distance) + " KM/ " +
                                     "Places libre: " + String.valueOf(park.getNb_place_libre()))
+                                    .snippet("Tarif: 1 Heure: 50DA 2 Heures: 100DA 3 Heures:" +
+                                            " 150DA Plus de 3 Heures: 60DA/30min")
                                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.ava)));
                         }
                     }
@@ -120,11 +128,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 destinationLocation = place.getLatLng();
 
                 float r;
-                if(!txt_rayon.getText().toString().equals("")){
-                    r = Float.parseFloat(txt_rayon.getText().toString());
-                }else {
-                    r= 10;
-                }
+                r= 10;
                 LatLng sydney = new LatLng(location.getLatitude(),location.getLongitude());
                 mMap.addMarker(new MarkerOptions().position(sydney).title("Position actuelle")
                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.me)));
@@ -138,6 +142,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             mMap.addMarker(new MarkerOptions().position(park.getLatLng()).title(park.getNom() + " /" +
                                     "Distance: " + String.valueOf(distance) + " KM/ " +
                                     "Places libre: " + String.valueOf(park.getNb_place_libre()))
+                                    .snippet("Tarif: 1 Heure: 50DA 2 Heures: 100DA 3 Heures:" +
+                                            " 150DA Plus de 3 Heures: 60DA/30min")
                                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.ava)));
                         }
                     }
@@ -152,15 +158,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
-        btn_choisir = findViewById(R.id.btn_choisir);
-        txt_rayon = findViewById(R.id.txt_rayon);
         tous = findViewById(R.id.btn_all);
-        btn_reserver = findViewById(R.id.btn_res);
+        seekBar = findViewById(R.id.seekBar);
 
-        btn_choisir.setOnClickListener(new View.OnClickListener() {
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
-            public void onClick(View v) {
-                float r = Float.parseFloat(txt_rayon.getText().toString());
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                float r = progress/10;
+
                 mMap.clear();
                 if(destinationLocation == null) {
                     LatLng sydney = new LatLng(location.getLatitude(), location.getLongitude());
@@ -176,6 +181,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 mMap.addMarker(new MarkerOptions().position(park.getLatLng()).title(park.getNom() + " /" +
                                         "Distance: " + String.valueOf(distance) + " KM/ " +
                                         "Places libre: " + String.valueOf(park.getNb_place_libre()))
+                                        .snippet("Tarif: 1 Heure: 50DA 2 Heures: 100DA 3 Heures:" +
+                                                " 150DA Plus de 3 Heures: 60DA/30min")
                                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.ava)));
                             }
                         }
@@ -196,18 +203,31 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 mMap.addMarker(new MarkerOptions().position(park.getLatLng()).title(park.getNom() + " /" +
                                         "Distance: " + String.valueOf(distance) + " KM/ " +
                                         "Places libre: " + String.valueOf(park.getNb_place_libre()))
+                                        .snippet("Tarif: 1 Heure: 50DA 2 Heures: 100DA 3 Heures:" +
+                                                " 150DA Plus de 3 Heures: 60DA/30min")
                                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.ava)));
                             }
                         }
                     }
                 }
+
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
             }
         });
 
         tous.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                float r = Float.parseFloat(txt_rayon.getText().toString());
+                float r = 10;
                 mMap.clear();
                 if(destinationLocation == null) {
                     LatLng sydney = new LatLng(location.getLatitude(), location.getLongitude());
@@ -223,11 +243,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 mMap.addMarker(new MarkerOptions().position(park.getLatLng()).title(park.getNom() + " /" +
                                         "Distance: " + String.valueOf(distance) + " KM/ " +
                                         "Places libre: " + String.valueOf(park.getNb_place_libre()))
+                                        .snippet("Tarif: 1 Heure: 50DA 2 Heures: 100DA 3 Heures:" +
+                                                " 150DA Plus de 3 Heures: 60DA/30min")
                                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.ava)));
                             }else {
                                 mMap.addMarker(new MarkerOptions().position(park.getLatLng()).title(park.getNom() + " /" +
                                         "Distance: " + String.valueOf(distance) + " KM/ " +
                                         "Places libre: " + String.valueOf(park.getNb_place_libre()))
+                                        .snippet("Tarif: 1 Heure: 50DA 2 Heures: 100DA 3 Heures:" +
+                                                " 150DA Plus de 3 Heures: 60DA/30min")
                                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.full)));
                             }
                         }
@@ -248,24 +272,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 mMap.addMarker(new MarkerOptions().position(park.getLatLng()).title(park.getNom() + " /" +
                                         "Distance: " + String.valueOf(distance) + " KM/ " +
                                         "Places libre: " + String.valueOf(park.getNb_place_libre()))
+                                        .snippet("Tarif: 1 Heure: 50DA 2 Heures: 100DA 3 Heures:" +
+                                                " 150DA Plus de 3 Heures: 60DA/30min")
                                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.ava)));
                             }else {
                                 mMap.addMarker(new MarkerOptions().position(park.getLatLng()).title(park.getNom() + " /" +
                                         "Distance: " + String.valueOf(distance) + " KM/ " +
                                         "Places libre: " + String.valueOf(park.getNb_place_libre()))
+                                        .snippet("Tarif: 1 Heure: 50DA 2 Heures: 100DA 3 Heures:" +
+                                                " 150DA Plus de 3 Heures: 60DA/30min")
                                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.full)));
                             }
                         }
                     }
                 }
-            }
-        });
-
-        btn_reserver.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), Reservation.class);
-                startActivity(intent);
             }
         });
 
@@ -331,6 +351,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public boolean onMarkerClick(Marker marker) {
                 Toast.makeText(getApplicationContext(), marker.getTitle(), Toast.LENGTH_LONG).show();
                 chosen = marker;
+                AlertDialog.Builder b = new AlertDialog.Builder(MapsActivity.this);
+
+                LayoutInflater inflater = getLayoutInflater();
+                View dialogLayout = inflater.inflate(R.layout.dialog, null);
+                b.setView(dialogLayout);
+                TextView textView = dialogLayout.findViewById(R.id.info2);
+                Button button = dialogLayout.findViewById(R.id.reserver_bouton);
+
+                textView.setText(chosen.getTitle()+"\n"+chosen.getSnippet());
+                button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(getApplicationContext(), Reservation.class);
+                        intent.putExtra("titre", chosen.getTitle());
+                        intent.putExtra("snippet", chosen.getSnippet());
+                        startActivity(intent);
+                    }
+                });
+                b.show();
                 return false;
             }
         });
