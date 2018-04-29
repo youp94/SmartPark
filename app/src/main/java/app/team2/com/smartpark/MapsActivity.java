@@ -56,6 +56,8 @@ import static java.security.AccessController.getContext;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
+    ///youpes
+
     private GoogleMap mMap;
     Marker chosen;
     Button tous;
